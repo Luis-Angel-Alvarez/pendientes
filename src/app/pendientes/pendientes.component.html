@@ -1,0 +1,100 @@
+<div class="card">
+  <div class="card-body">
+    <div id="table" class="table-editable">
+      <table class="table table-bordered table-responsive-md table-striped text-center">
+        <tr>
+          <th class="text-center">Id</th>
+          <th class="text-center">Pendiente</th>
+          <th class="text-center">Fecha</th>
+          <th class="text-center">Remove</th>
+          <th class="text-center">Edit</th>
+        </tr>
+        <tr *ngFor="let person of personList; let id = index">
+          <td>
+            <span>{{person.name}}</span>
+          </td>
+          <td>
+            <span>{{person.age}}</span>
+          </td>
+          <td>
+            <span>{{person.city}}</span>
+          </td>
+          <td>
+            <span class="table-remove">
+              <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" (click)="remove(id)">Remove</button>
+            </span>
+          </td>
+          <td>
+            <span class="table-remove">
+              <button type="button" mdbBtn color="danger" rounded="true" size="sm" class="my-0" aria-hidden="true" data-toggle="modal" data-target="#ModalEdit" (click)="edit(id)">Edit</button>
+            </span>
+          </td>
+        </tr>
+      </table>
+      <!--input [(ngModel)]="name" required-->
+    </div>
+  </div>
+  <div class="card-footer">
+    <span class="table-add float-left mb-3 mr-2">
+      <a class="text-primary">
+        <i class="fa fa-plus" aria-hidden="true" data-toggle="modal" data-target="#ModalAdd"></i>
+      </a>
+    </span>
+  </div>
+</div>
+
+<!-- Modal Add -->
+<div class="modal fade" id="ModalAdd" tabindex="-1" role="dialog" aria-labelledby="ModalAddTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="message-text" class="col-form-label">Message:</label>
+          <textarea [(ngModel)]="pendingAdd" class="form-control"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary" [disabled]="!pendingAdd" (click)="save()">Save changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Edit -->
+<div class="modal fade" id="ModalEdit" tabindex="-1" role="dialog" aria-labelledby="ModalEditTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Id:</label>
+            <input type="text" [(ngModel)]="idPending" class="form-control" disabled>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Pendiente:</label>
+            <textarea [(ngModel)]="pendingEdit" class="form-control"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="message-text" class="col-form-label">Fecha:</label>
+            <input type="text" [(ngModel)]="date" class="form-control" disabled>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary" (click)="update()" [disabled]="!pendingEdit">Save changes</button>
+        </div>
+      </div>
+    </div>
+  </div>
