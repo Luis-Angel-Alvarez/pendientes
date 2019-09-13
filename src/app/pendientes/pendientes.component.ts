@@ -1,46 +1,79 @@
 import { Component, OnInit } from '@angular/core';
-
+import { PendienteServiceService } from '../pendiente-service.service';
 
 @Component({
   selector: 'app-pendientes',
   templateUrl: './pendientes.component.html',
   styleUrls: ['./pendientes.component.css']
 })
-export class PendientesComponent  {
+export class PendientesComponent implements OnInit  {
 
-  pendingAdd: string = '';
+  constructor(public rest:PendienteServiceService) { }
+
+  pendingAdd: string;
   pendingEdit: string;
   idPending: string;
   date: string;
+  pendings;
 
-  editField: string;
-    personList: Array<any> = [
-      { id: 1, name: 'Aurelia Vega', age: 30, companyName: 'Deepends', country: 'Spain', city: 'Madrid' },
-      { id: 2, name: 'Guerra Cortez', age: 45, companyName: 'Insectus', country: 'USA', city: 'San Francisco' },
-      { id: 3, name: 'Guadalupe House', age: 26, companyName: 'Isotronic', country: 'Germany', city: 'Frankfurt am Main' },
-      { id: 4, name: 'Aurelia Vega', age: 30, companyName: 'Deepends', country: 'Spain', city: 'Madrid' },
-      { id: 5, name: 'Elisa Gallagher', age: 31, companyName: 'Portica', country: 'United Kingdom', city: 'London' },
-    ];
+  resetData(){
+    this.pendingAdd = '';
+    this.pendingEdit = '';
+    this.idPending = '';
+  }
 
-    remove(id: any) {
-      this.personList.splice(id, 1);
+  ngOnInit(): void {
+    this.getPendings();
+  }
+  getPendings() {
+    this.pendings = [];
+    this.rest.getPendings().subscribe((data: {}) => {
+      this.pendings = data;
+    });
+  }
+
+
+    remove(id) {
+      this.idPending = this.pendings[id].idPendiente;
+      this.rest.deletePending(this.idPending).subscribe((result) => {
+        this.getPendings();
+        this.resetData();
+      }, (err) => {
+        console.log(err);
+      });
     }
 
     edit(id){
-      console.log("ID--->"+id);
-
-      console.log("El registro es",this.personList[id]);
-      this.idPending = this.personList[id].id;
-      this.pendingEdit = this.personList[id].name;
-      this.date = this.personList[id].country;
+      this.idPending = this.pendings[id].idPendiente;
+      this.pendingEdit = this.pendings[id].pendiente;
+      this.date = this.pendings[id].fechapendiente;
     }
 
-    save(){
-      console.log("DATA---->",this.pendingAdd);
+    addPending() {
+
+      const pendingObj = {
+        "pendiente": this.pendingAdd
+      };
+
+      this.rest.addPending(pendingObj).subscribe((result) => {
+        this.getPendings();
+        this.resetData();
+      }, (err) => {
+        console.log(err);
+      });
     }
 
     update(){
-      console.log("SI EDITA",this.pendingEdit);
+      const pendingObj = {
+        "idpendiente":this.idPending,
+        "pendiente": this.pendingEdit
+      };
+      this.rest.updatePending(pendingObj).subscribe((result) => {
+        this.getPendings();
+        this.resetData();
+      }, (err) => {
+        console.log(err);
+      });
     }
 
 }
